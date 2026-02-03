@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Hospital Booking{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 text-center">
+        <h1 class="display-4 mb-4">
+            <i class="bi bi-hospital"></i> Hospital Appointment Booking System
+        </h1>
+        <p class="lead">Book your appointments with ease</p>
+        <hr>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="bi bi-person-circle display-1 text-primary"></i>
+                <h3 class="mt-3">For Patients</h3>
+                <p>Book appointments, view your schedule, and manage your medical appointments.</p>
+                {% if not session.user_id %}
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Register as Patient</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="bi bi-person-badge display-1 text-success"></i>
+                <h3 class="mt-3">For Doctors</h3>
+                <p>Manage your availability, view appointments, and update appointment status.</p>
+                {% if not session.user_id %}
+                <a href="{{ url_for('auth.login') }}" class="btn btn-success">Doctor Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <i class="bi bi-shield-check display-1 text-danger"></i>
+                <h3 class="mt-3">For Administrators</h3>
+                <p>Manage doctors, departments, and view all appointments in the system.</p>
+                {% if not session.user_id %}
+                <a href="{{ url_for('auth.login') }}" class="btn btn-danger">Admin Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

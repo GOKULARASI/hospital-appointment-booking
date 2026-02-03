@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Dashboard - Hospital Booking{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2><i class="bi bi-person-circle"></i> Patient Dashboard</h2>
+        <hr>
+    </div>
+</div>
+
+<!-- SUMMARY CARDS -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Total Appointments</h5>
+                <h2>{{ appointments | length }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Upcoming Appointments</h5>
+                <h2>
+                    {{ appointments
+                        | selectattr('status', 'equalto', 'pending')
+                        | list
+                        | length }}
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">Quick Actions</h5>
+                <!-- FIXED LINK -->
+                <a href="{{ url_for('patient.departments') }}"
+                   class="btn btn-light btn-sm">
+                    Book Appointment
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- APPOINTMENTS TABLE -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">My Appointments</h5>
+            </div>
+            <div class="card-body">
+                {% if appointments %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Doctor</th>
+                                <th>Department</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in appointments %}
+                            <tr>
+                                <td>{{ appointment.date.strftime('%Y-%m-%d') }}</td>
+                                <td>{{ appointment.time }}</td>
+                                <td>{{ appointment.doctor.name }}</td>
+                                <td>{{ appointment.doctor.department.name }}</td>
+                                <td>
+                                    {% if appointment.status == 'pending' %}
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                    {% elif appointment.status == 'completed' %}
+                                        <span class="badge bg-success">Completed</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Cancelled</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                    <p class="text-center text-muted">
+                        You have not booked any appointments yet.
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

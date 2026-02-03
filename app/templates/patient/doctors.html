@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Doctors - Hospital Booking{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2><i class="bi bi-person-badge"></i> Doctors</h2>
+        {% if selected_dept %}
+        <p class="text-muted">Department: <strong>{{ selected_dept }}</strong></p>
+        {% endif %}
+        <hr>
+    </div>
+</div>
+
+<div class="row">
+    {% if doctors %}
+        {% for doctor in doctors %}
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ doctor.name }}</h5>
+                    <p class="card-text">
+                        <strong>Department:</strong> {{ doctor.department }}<br>
+                        <strong>Specialization:</strong> {{ doctor.specialization }}
+                    </p>
+                    <a href="{{ url_for('patient.book_appointment', doctor_id=doctor.id) }}" class="btn btn-primary">Book Appointment</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-md-12">
+            <div class="alert alert-info">No doctors available in this department.</div>
+        </div>
+    {% endif %}
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-12">
+        <a href="{{ url_for('patient.departments') }}" class="btn btn-secondary">Back to Departments</a>
+    </div>
+</div>
+{% endblock %}

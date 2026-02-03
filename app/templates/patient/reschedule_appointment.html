@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Reschedule Appointment - Hospital Booking{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2><i class="bi bi-calendar-event"></i> Reschedule Appointment</h2>
+        <hr>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Current Appointment</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Doctor:</strong> Dr. {{ doctor.name }}</p>
+                <p><strong>Current Date:</strong> {{ appointment.date.strftime('%Y-%m-%d') }}</p>
+                <p><strong>Current Time:</strong> {{ appointment.time }}</p>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0">Select New Date & Time</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="date" class="form-label">Select Date</label>
+                        <select class="form-select" id="date" name="date" required onchange="updateTimeSlots()">
+                            <option value="">Choose a date...</option>
+                            {% for date_info in available_dates %}
+                            <option value="{{ date_info.date }}">{{ date_info.date }} ({{ date_info.date_obj.strftime('%A') }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="time_slot" class="form-label">Select Time Slot</label>
+                        <select class="form-select" id="time_slot" name="time_slot" required>
+                            <option value="">Choose a time slot...</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Reschedule Appointment</button>
+                    <a href="{{ url_for('patient.appointments') }}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const availableDates = {{ available_dates | tojson }};
+
+function updateTimeSlots() {
+    const dateSelect = document.getElementById('date');
+    const timeSelect = document.getElementById('time_slot');
+    const selectedDate = dateSelect.value;
+    
+    timeSelect.innerHTML = '<option value="">Choose a time slot...</option>';
+    
+    if (selectedDate) {
+        const dateInfo = availableDates.find(d => d.date === selectedDate);
+        if (dateInfo && dateInfo.slots) {
+            dateInfo.slots.forEach(slot => {
+                const option = document.createElement('option');
+                option.value = slot;
+                option.textContent = slot;
+                timeSelect.appendChild(option);
+            });
+        }
+    }
+}
+</script>
+{% endblock %}
